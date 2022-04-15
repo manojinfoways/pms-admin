@@ -12,11 +12,13 @@ import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import { showError, showSuccess } from "app/utils/helpers";
 import history from "@history";
+// import moment from "moment";
 import moment from "moment";
 // import "react-datepicker/dist/react-datepicker.css";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { TextareaAutosize } from "@mui/material";
 
 const SubmitButton = styled(Button)({
   width: "100%",
@@ -48,12 +50,13 @@ const CreateTaskReportAdmin = (props) => {
   const [inputData, setInputData] = useState("");
   const [id, setId] = useState("");
   const [project_id, setProject_id] = useState("");
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [minutes, setMinutes] = useState("");
   const [hours, setHours] = useState("");
   const [minutess, setMinutess] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(moment().format("DD/MM/yyyy"));
   const [createdat, setCreatedat] = useState(moment());
   const [updatedat, setUpdatedat] = useState(moment());
   const [project, setProject] = useState([]);
@@ -80,8 +83,11 @@ const CreateTaskReportAdmin = (props) => {
       setTitle(stateData.title);
       // setStatus(stateData.status);
       setDescription(stateData.description);
-      setMinutes(stateData.minutes);
-      setDate(stateData.date);
+      let hr = Math.floor(stateData.minutes / 60);
+      setHours(hr);
+      let mn = stateData.minutes - hr * 60;
+      setMinutes(mn);
+      setDate(moment(stateData.date).format("DD/MM/YYYY"));
       setCreatedat(stateData.createdat);
       setUpdatedat(stateData.updatedat);
       // setRole(stateData.role);
@@ -111,7 +117,7 @@ const CreateTaskReportAdmin = (props) => {
     setInputData("");
     setOptions([]);
     setError({});
-
+    setHours("");
     setProject_id("");
     setTitle("");
     Dsetdescription("");
@@ -141,7 +147,7 @@ const CreateTaskReportAdmin = (props) => {
             taskreportId: id,
             title: title,
             description: description,
-            minutes: minutes,
+            minutes: minutes + hours * 60,
             date: date,
             createdat: createdat,
             updatedat: updatedat,
@@ -164,11 +170,11 @@ const CreateTaskReportAdmin = (props) => {
             // Authorization: user.token,
             //  },
             {
-              project_id: id,
+              project_id: project_id,
               title: title,
               description: description,
-              minutes: minutes,
-              date: date,
+              minutes: minutes + hours * 60,
+              date: moment(date, "DD/MM/YYYY").format("YYYY-MM-DD"),
               createdat: createdat,
               updatedat: updatedat,
               // status: status,
@@ -193,16 +199,6 @@ const CreateTaskReportAdmin = (props) => {
     setError({});
     let isValid = true;
     let errors = {};
-    if (project_id) setError((prev) => ({ ...prev, project_id: false }));
-    else {
-      setError((prev) => ({
-        ...prev,
-        project_id: true,
-        errors: "Only letters",
-        project_id_message: "Enter Survey project_id please",
-      }));
-      isValid = false;
-    }
 
     if (title) setError((prev) => ({ ...prev, title: false }));
     else {
@@ -279,7 +275,7 @@ const CreateTaskReportAdmin = (props) => {
         columnSpacing={{ xs: 1, sm: 2, md: 3 }}
       >
         {id ? null : (
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          <Grid item xs={6}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Project_id</InputLabel>
               <Select
@@ -299,7 +295,7 @@ const CreateTaskReportAdmin = (props) => {
           </Grid>
         )}
 
-        <Grid item xs={12} sm={12} md={6} lg={6}>
+        <Grid item xs={6}>
           <TextField
             id="title"
             label="title"
@@ -316,85 +312,98 @@ const CreateTaskReportAdmin = (props) => {
             placeholder={error.title}
           />
         </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
-          <TextField
+        <Grid item xs={12}>
+          <TextareaAutosize
+            style={{ width: " 90rem", height: "11rem" }}
+            placeholder="Empty"
             id="description"
-            label="description"
+            label="Description"
             classes={{ root: classes.customLabel }}
-            type="text"
+            type="textarea"
+            multiline={true}
             name="description"
-            error={error.description}
-            required
-            inputProps={{ maxLength: 50 }}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            rows={5}
             variant="outlined"
-            fullWidth
-            placeholder={error.description}
+            error={error.description}
+            placeholder={error.description_message}
           />
         </Grid>
-        {/* <Grid item xs={12} sm={12} md={4} lg={4}> */}
-        <Grid item xs={12} sm={12} md={4} lg={4}>
-          <TextField
-            id="hours"
-            label="hours"
-            classes={{ root: classes.customLabel }}
-            type="number"
-            name="hours"
-            error={error.hours}
-            required
-            inputProps={{ maxLength: 9 }}
-            value={hours}
-            onChange={(e) => setHours(e.target.value)}
-            variant="outlined"
-            fullWidth
-            placeholder={error.hours}
-          />
-        </Grid>
-        <Grid item xs={12} sm={12} md={4} lg={4}>
-          <TextField
-            id="minutes"
-            label="minutes"
-            classes={{ root: classes.customLabel }}
-            type="number"
-            name="minutes"
-            error={error.minutes}
-            required
-            inputProps={{ maxLength: 9 }}
-            value={minutes}
-            onChange={(e) => setMinutes(e.target.value)}
-            variant="outlined"
-            fullWidth
-            placeholder={error.minutes}
-          />
-        </Grid>
-        {/* </Grid> */}
-        {/* <Grid item xs={12} sm={12} md={6} lg={6}>
-          <TextField
-            id="minutes"
-            label="minutes"
-            classes={{ root: classes.customLabel }}
-            type="number"
-            name="minutes"
-            error={error.minutes}
-            required
-            inputProps={{ maxLength: 9 }}
-            value={minutes}
-            onChange={(e) => setMinutes(e.target.value)}
-            variant="outlined"
-            fullWidth
-            placeholder={error.minutes}
-          />
-        </Grid> */}
 
-        <Grid item xs={12} sm={12} md={6} lg={6}>
+        <Grid item lg={3}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Hours</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={hours}
+              id="hours"
+              label="hours"
+              error={error.hours}
+              onChange={(e) => setHours(e.target.value)}
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={7}>7</MenuItem>
+              <MenuItem value={8}>8</MenuItem>
+              <MenuItem value={9}>9</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item lg={3}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Minutes</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={minutes}
+              id="minutes"
+              label="minutes"
+              error={error.minutes}
+              onChange={(e) => setMinutes(e.target.value)}
+            >
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={15}>15</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={25}>25</MenuItem>
+              <MenuItem value={30}>30</MenuItem>
+              <MenuItem value={35}>35</MenuItem>
+              <MenuItem value={40}>40</MenuItem>
+              <MenuItem value={45}>45</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+              <MenuItem value={55}>55</MenuItem>
+              <MenuItem value={60}>60</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+        <Grid item lg={3}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
               label="date"
-              inputFormat="MM/dd/yyyy"
+              inputFormat="dd/MM/yyyy"
               value={date}
-              onChange={(dob) => setDate(dob)}
-              renderInput={(params) => <TextField {...params} />}
+              onChange={(dob) => {
+                setDate(dob);
+                console.log("dob", dob);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  value={date}
+                  {...params}
+                  inputProps={{
+                    ...params.inputsProps,
+                    placeholder: "dd/mm/aaaa",
+                  }}
+                />
+              )}
             />
           </LocalizationProvider>
         </Grid>
