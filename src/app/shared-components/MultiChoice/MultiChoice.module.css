@@ -1,0 +1,21 @@
+.container {
+  /* min-width: 40%; */
+  padding: 0.4rem;
+  margin-bottom: 1rem;
+  background-color: #f7f9fb;
+  border-radius: 0.5rem;
+}
+
+.subcontainer {
+  display: inline-flex;
+  align-items: center;
+}
+
+.selected {
+  background-color: #002c72;
+  color: white;
+}
+
+.otherInput {
+  margin-bottom: 1rem;
+}

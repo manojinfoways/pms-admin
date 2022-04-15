@@ -1,0 +1,23 @@
+@media print {
+    body{
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+
+    }
+    footer {
+        position: fixed;
+        bottom: 0;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 10mm 1mm 11mm 1mm;
+    }
+
+    .content-block, p {
+        page-break-inside: avoid;
+        overflow-x: auto;
+    }
+
+    .pagebreak { page-break-before: always; }
+}

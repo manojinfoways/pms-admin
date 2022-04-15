@@ -1,0 +1,12 @@
+.container {
+  /* min-width: 40%; */
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  background-color: #f7f9fb;
+  border-radius: 0.5rem;
+}
+
+.selected {
+  background-color: #002c72;
+  color: white;
+}

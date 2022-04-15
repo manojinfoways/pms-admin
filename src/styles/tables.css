@@ -1,0 +1,78 @@
+/**
+Basic Table Styles
+ */
+.table-responsive {
+    display: block;
+    width: 100%;
+}
+
+table.simple {
+    width: 100%;
+    table-layout: auto;
+    border: none;
+    border-spacing: 0;
+    text-align: left;
+    display: table;
+    page-break-after:always;
+}
+
+table.simple thead tr th {
+    padding: 16px 8px;
+    font-weight: 500;
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.12);
+    width: 10%;
+    min-width: 90px;
+    white-space: pre-line;
+}
+
+table.simple thead tr th:first-child {
+    padding-left: 24px;
+}
+
+table.simple thead tr th:last-child {
+    padding-right: 24px;
+}
+
+table.simple tbody tr td {
+    padding: 12px 8px;
+    width: 10%;
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.12);
+    white-space: normal;
+    word-break: break-all;
+    max-width: 180px;
+}
+table.simple tbody tr td p {
+    white-space: pre-line !important;
+}
+
+table.simple tbody tr td:first-child {
+    padding-left: 24px;
+}
+
+table.simple tbody tr td:last-child {
+    padding-right: 24px;
+}
+
+table.simple tbody tr:last-child td {
+    border-bottom: none;
+}
+
+table.simple.clickable tbody tr {
+    cursor: pointer;
+}
+
+table.simple.clickable tbody tr:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+table.simple.borderless {
+    border: none;
+}
+
+table.simple.borderless tbody tr td{
+    border: none;
+}
+
+table.simple.borderless thead tr th{
+    border: none;
+}
