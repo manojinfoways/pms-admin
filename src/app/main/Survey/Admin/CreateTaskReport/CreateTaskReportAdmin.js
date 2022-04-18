@@ -314,8 +314,12 @@ const CreateTaskReportAdmin = (props) => {
         </Grid>
         <Grid item xs={12}>
           <TextareaAutosize
-            style={{ width: " 90rem", height: "11rem" }}
-            placeholder="Empty"
+            style={{
+              width: " 90rem",
+              height: "11rem",
+              backgroundColor: "#f6f7f9",
+              borderRadius: "1px solid black",
+            }}
             id="description"
             label="Description"
             classes={{ root: classes.customLabel }}
@@ -327,7 +331,7 @@ const CreateTaskReportAdmin = (props) => {
             rows={5}
             variant="outlined"
             error={error.description}
-            placeholder={error.description_message}
+            placeholder="Description..."
           />
         </Grid>
 

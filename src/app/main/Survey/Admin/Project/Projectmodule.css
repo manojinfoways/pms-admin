@@ -26,9 +26,9 @@
   }
 }
 
-/* .css-1qaznj3-MuiCardContent-root {
+.css-1qaznj3-MuiCardContent-root {
   padding: 5px;
-} */
+}
 .MuiTypography-h5-519 {
   font-size: 2.2285714285714286rem;
   font-family: Poppins, Roboto, "Helvetica", Arial, sans-serif;
@@ -36,7 +36,7 @@
   line-height: 1.334;
   height: 10px;
 }
-.data_name {
+.data_name1 {
   font-size: 1.7rem;
   font-family: Poppins, Roboto, "Helvetica", Arial, sans-serif;
   font-weight: 300;
@@ -48,4 +48,31 @@
   flex: 1 0 auto;
   cursor: pointer;
   /* margin-top: 1.4rem; */
+}
+
+@media screen and (max-width: 800px) {
+  .box {
+    width: 100%;
+    height: auto;
+    /* margin-top: 10%;  */
+    /* The width is 100%, when the viewport is 800px or smaller */
+  }
+}
+
+.card {
+  overflow-wrap: break-word;
+  hyphens: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.a,
+.b {
+  text-align: justify;
+  -moz-text-align-last: justify;
+  text-align-last: justify;
 }

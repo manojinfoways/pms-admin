@@ -12,6 +12,8 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import { setToolbarHeader } from "app/store/fuse/toolbarHeaderSlice";
 import Grid from "@material-ui/core/Grid";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 
 // import { makeStyles } from "@material-ui/core/styles";
 
@@ -73,7 +75,7 @@ const ProjectList = () => {
   return (
     <div
       style={{
-        padding: "6rem",
+        padding: "3.2rem",
       }}
     >
       <Grid container spacing={2}>
@@ -82,6 +84,8 @@ const ProjectList = () => {
             <Card
               sx={{
                 display: "flex",
+                // height: "100%",
+                // marginBottom: "1rem",
               }}
             >
               {data.image ? (
@@ -89,7 +93,7 @@ const ProjectList = () => {
                   component="img"
                   sx={{ width: 90, height: 90, objectFit: "cover" }}
                   image={data.image}
-                  alt="Live from space album cover"
+                  alt="Live from space album contain"
                 />
               ) : (
                 <CardMedia
@@ -100,44 +104,55 @@ const ProjectList = () => {
                   alt="Live from space album cover"
                 />
               )}
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Grid>
-                  <div
-                    className="data_name"
-                    style={{ marginTop: "0.2rem" }}
-                    onClick={() => {
-                      history.push({
-                        pathname: "/admin/project/update/" + data._id,
 
-                        state: { survey: data },
-                      });
-                    }}
-                  >
-                    {data.name} <br /> <br />
-                  </div>
-                </Grid>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
                 <div
+                  // className="data_name"
                   style={{
-                    marginTop: "3.5rem",
+                    marginTop: "0.4rem",
+                    color: "black",
+                    fontSize: "1.7rem",
+                    marginLeft: "0.6rem",
+                  }}
+                  onClick={() => {
+                    history.push({
+                      pathname: "/admin/project/update/" + data._id,
+
+                      state: { survey: data },
+                    });
+                  }}
+                >
+                  {data.name}
+                </div>
+
+                <span
+                  style={{
+                    marginTop: "0.5rem",
                     display: "flex",
-                    flexDirection: "row",
+                    // width: "100%",
+                    // height: "100%",
+                    // flexDirection: "row",
+                    // overflow: "hidden",
                   }}
                 >
                   {data.assignUsers.map((datas) => (
                     <Tooltip title={datas.firstname}>
                       <Avatar
                         style={{
-                          width: "2.5rem",
-                          height: "2.5rem",
-                          marginLeft: "0.5rem",
+                          width: "2.8rem",
+                          height: "2.8rem",
+                          marginLeft: "0.2rem",
                           cursor: "pointer",
+                          color: " black",
+                          backgroundColor: "whitesmoke",
+                          marginBottom: "0.5rem",
                         }}
                         alt="user photo"
                         src={datas.url}
                       />
                     </Tooltip>
                   ))}
-                </div>
+                </span>
               </Box>
             </Card>
           </Grid>
