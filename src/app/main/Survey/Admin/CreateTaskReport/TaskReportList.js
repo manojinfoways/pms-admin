@@ -6,6 +6,10 @@ import { CircularProgress, Tooltip, Typography } from "@material-ui/core";
 import { setToolbarHeader } from "app/store/fuse/toolbarHeaderSlice";
 import { openDialog, closeDialog } from "app/store/fuse/dialogSlice";
 import { useHistory } from "react-router-dom";
+import Grid from "@material-ui/core/Grid";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
 
 import { format } from "date-fns";
 import moment from "moment";
@@ -15,7 +19,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
-
+import { MenuItem } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import { LocalPrintshop } from "@material-ui/icons";
 import Icon from "@material-ui/core/Icon";
@@ -26,6 +30,12 @@ import clsx from "clsx";
 import PrintModal from "app/shared-components/PrintModal";
 import { showError, showSuccess } from "app/utils/helpers";
 import { MoreTime } from "@mui/icons-material";
+
+import DateRangePicker from "react-bootstrap-daterangepicker";
+// import "react-date-range/dist/styles.css"; // main style file
+// import "react-date-range/dist/theme/default.css"; // theme css file
+import "bootstrap-daterangepicker/daterangepicker.css";
+import { times } from "lodash";
 
 const columns = [
   {
@@ -39,14 +49,6 @@ const columns = [
       setCellProps: () => ({ style: { minWidth: "120px" } }),
     },
   },
-  //   {
-  //     name: "project_id",
-  //     label: "Project_id",
-  //     options: {
-  //       filter: true,
-  //       sort: true,
-  //     },
-  //   },
   {
     name: "title",
     label: "Title",
@@ -79,14 +81,6 @@ const columns = [
       sort: true,
     },
   },
-  // {
-  //   name: "createdat",
-  //   label: "Createdat",
-  //   options: {
-  //     filter: true,
-  //     sort: true,
-  //   },
-  // },
   {
     name: "updatedat",
     label: "Updatedat",
@@ -129,15 +123,28 @@ const TaskReportList = () => {
   const [adminPtrListing, setAdminPtrListing] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [printDataModal, setPrintDataModal] = useState(false);
-  const [isChatPopUpOpen, setIsChatPopUpOpen] = useState(false);
-  const [chatRequestData, setChatRequestData] = useState({});
-
+  const [sumVal, setSumVal] = useState(0);
+  const [startDate, setStartDate] = useState(
+    moment().subtract(29, "days").toDate()
+  );
+  const [endDate, setEndDate] = useState(moment().toDate());
+  const [project_id, setProject_id] = useState("");
+  const [project, setProject] = useState([]);
+  const [error, setError] = useState({});
+  const [minutes, setMinutes] = useState("");
+  const [respondedData, setRespondedData] = useState([]);
+  const [hours, setHours] = useState("");
   const history = useHistory();
   const dispatch = useDispatch();
   const classes = useStyles();
+
   const updatePropertyInclusion = async (propertyId, inclusionStatus) => {
     setIsLoading(true);
   };
+  const handleChange = (event) => {
+    setProject_id(event.target.value);
+  };
+
   const options = useMemo(
     () => ({
       filter: true,
@@ -180,32 +187,73 @@ const TaskReportList = () => {
 
   useEffect(() => {
     dispatch(setToolbarHeader("Task Report List"));
-    fetchData();
+    // setStartDate(moment().format("DD-MM-YYYY"));
+    // setEndDate("2022-04-05");
+    // setEndDate(moment().format("DD-MM-YYYY"));
+
+    // setStartDate(moment().startOf("month").format("YYYY-MM-DD").toDate());
+    // setEndDate(moment().endOf("month").format("YYYY-MM-DD").toDate());
   }, []);
 
+  useEffect(() => {
+    getProjectList();
+  }, []);
+  useEffect(() => {
+    fetchData();
+  }, [startDate, project_id]);
+  useEffect(() => {
+    getCount();
+  }, [respondedData]);
+
+  const getCount = () => {
+    let sum = 0;
+
+    if (respondedData) {
+      respondedData.map((item) => {
+        sum = sum + parseInt(item.minutes);
+      });
+    }
+
+    let hr = Math.floor(sum / 60);
+    setHours(hr);
+    let mn = sum % 60;
+    setMinutes(mn);
+
+    setSumVal(sum);
+  };
+  const handleCancel = (event, picker) => {
+    picker.element.val("");
+  };
+
+  const handleCallback = (start, end, label) => {
+    console.log("ORg", moment());
+    console.log("start===>", start, "End date", end);
+    let sd = moment(start).format("YYYY-MM-DD");
+    let ed = moment(end).format("YYYY-MM-DD");
+
+    console.log("mystart===>", sd, "End date", ed);
+
+    setStartDate(sd);
+    setEndDate(ed);
+
+    console.log("new start", sd, "End date", ed);
+  };
   const fetchData = () => {
     setIsLoading(true);
-    axios
-      .get("/taskreport/list")
 
+    axios
+      .post("/taskreport/filterdata", {
+        startdate: startDate,
+        enddate: endDate,
+        projectId: project_id,
+      })
       .then((response) => {
-        console.log("Task Report List", response.data.data);
+        let resdata = response.data.data ? response.data.data : response.data;
+
+        setRespondedData(resdata);
         setAdminPtrListing(
-          response.data.data.map((row) => [
+          resdata.map((row) => [
             <div className={classes.actionContainer}>
-              {/* <Tooltip title="View Stages">
-                <Icon
-                  className="cursor-pointer"
-                  onClick={() => {
-                    history.push({
-                      pathname: "/admin/intake/question/" + row.id,
-                      state: { survey: row },
-                    });
-                  }}
-                >
-                  visibility
-                </Icon>
-              </Tooltip> */}
               <Tooltip title={"Edit Survey"}>
                 <Icon
                   className="cursor-pointer"
@@ -301,8 +349,126 @@ const TaskReportList = () => {
         showError(error.response?.message);
       });
   };
+
+  const getProjectList = () => {
+    setIsLoading(true);
+
+    axios
+      .get("/projectlist")
+      .then((res) => {
+        const project = res.data.data;
+        setProject(project);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        showError(error.message);
+      });
+  };
   return (
     <div className="mx-20 my-20">
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+          {/* {startDate}
+          {endDate} */}
+          <div
+            style={{
+              marginBottom: "15px",
+              width: "59%",
+              fontSize: "1.8rem",
+              marginLeft: "6px",
+              marginTop: "7px",
+              borderRadius: "4px ",
+            }}
+          >
+            <DateRangePicker
+              initialSettings={{
+                startDate: startDate,
+                endDate: endDate,
+
+                locale: {
+                  cancelLabel: "Clear",
+                  format: "YYYY-MM-DD",
+                },
+                ranges: {
+                  Today: [moment().toDate(), moment().toDate()],
+                  Yesterday: [
+                    moment().subtract(1, "days").toDate(),
+                    moment().subtract(1, "days").toDate(),
+                  ],
+                  "Last 7 Days": [
+                    moment().subtract(6, "days").toDate(),
+                    moment().toDate(),
+                  ],
+                  "Last 30 Days": [
+                    moment().subtract(29, "days").toDate(),
+                    moment().toDate(),
+                  ],
+                  "This Month": [
+                    moment().startOf("month").toDate(),
+                    moment().endOf("month").toDate(),
+                  ],
+                  "Last Month": [
+                    moment().subtract(1, "month").startOf("month").toDate(),
+                    moment().subtract(1, "month").endOf("month").toDate(),
+                  ],
+                },
+              }}
+              onCancel={handleCancel}
+              // onEvent={this.handleEvent}
+              onCallback={(start, end) => handleCallback(start, end)}
+            >
+              <input className="form-control" />
+            </DateRangePicker>
+          </div>
+        </Grid>
+        <Grid item xs={1}></Grid>
+
+        <Grid item xs={4}>
+          <div
+            style={{
+              marginBottom: "15px",
+            }}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                Project List
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={project_id}
+                label="project_id"
+                error={error.project_id}
+                onChange={handleChange}
+              >
+                <MenuItem value="">All Project</MenuItem>
+                {project.map((data) => (
+                  <MenuItem value={data._id}>{data.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+        </Grid>
+        <Grid item xs={1}></Grid>
+        <Grid item xs={2}>
+          <div
+            style={{
+              // color: "#7a1313f5",
+              fontSize: "1.8rem",
+              marginBottom: "15px",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "white",
+                // marginLeft: "2px",
+              }}
+            >
+              {hours} :{minutes}
+            </div>
+          </div>
+        </Grid>
+      </Grid>
       <MUIDataTable
         title={
           <Typography variant="h6">

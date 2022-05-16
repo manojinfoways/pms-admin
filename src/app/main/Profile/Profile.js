@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
+import moment from "moment";
 import { showError, showSuccess } from "app/utils/helpers";
 import { setToolbarHeader } from "app/store/fuse/toolbarHeaderSlice";
 import clsx from "clsx";
@@ -14,6 +15,7 @@ import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 
+import { setUserImage } from "../../auth/store/userSlice";
 const SubmitButton = styled(Button)({
   width: "100%",
   marginTop: "15px",
@@ -38,9 +40,8 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
-  const [dob, setDob] = useState("");
-  const [company, setCompany] = useState("");
   const [phone, setPhone] = useState("");
+  const [dob, setDob] = useState(moment());
   const [error, setError] = useState({});
   const [fileshow, setFileshow] = useState("");
   const [file, setFile] = useState(undefined);
@@ -48,15 +49,16 @@ const Profile = () => {
 
   useEffect(() => {
     dispatch(setToolbarHeader("Profile"));
-    console.log(user);
+    // console.log("-user-", user);
 
     if (user.data.otherInfo) {
+      // console.log("000", user.data.otherInfo);
       setEmail(user.data.otherInfo.data.email);
       setFirstName(user.data.otherInfo.data.firstname);
       setLastName(user.data.otherInfo.data.lastname);
-      setDob(user.data.otherInfo.data.dob);
       setPhone(user.data.otherInfo.data.phone);
-      setCompany(user.data.otherInfo.data.company);
+      setDob(user.data.otherInfo.data.dob);
+      setFileshow(user.data.otherInfo.data.image);
     }
   }, []);
 
@@ -64,26 +66,20 @@ const Profile = () => {
     setError({});
 
     axios
-      .post("user/updateProfile", {
-        email: user.data.otherInfo.data.email,
+      .put("users/updateProfile", {
         firstname: firstname,
         lastname: lastname,
-        dob: dob,
-        company: company,
+        email: email,
         phone: phone,
+        dob: dob,
+        // image: image,
       })
       .then((res) => {
+        console.log("update profile = >", res.data);
         showSuccess(res.data.message);
-
-        // let Email = response.data.result.email;
-        // let FirstName = response.data.result.firstName;
-        // let updatedUser = { ...user };
-
-        // updatedUser.result.email = Email;
-        // updatedUser.result.firstName = FirstName;
       })
       .catch((err) => {
-        showError(err.response.data.message);
+        showError(err.res.data.message);
       });
   };
 
@@ -103,22 +99,20 @@ const Profile = () => {
   const handleUpdateProfilePic = (selectedfile) => {
     var bodyFormData = new FormData();
 
-    bodyFormData.append("profile_photo", selectedfile);
+    bodyFormData.append("image", selectedfile);
 
     axios({
-      method: "post",
-      url: "http://65.1.136.216:3005/apiv1/user/uploadProfilePic",
+      method: "put",
+      url: "users/updateProfile",
       data: bodyFormData,
-      // headers: {
-      //   Authorization: user.token,
-      // },
     })
-      .then((response) => {
-        console.log(response);
-        console.log("Update Picture Response", response.data);
+      .then((res) => {
+        console.log("Update Picture res", res.data.data.image);
+        dispatch(setUserImage(res.data.data.image));
+        showSuccess(res.data.message);
       })
-      .catch((response) => {
-        console.log(response);
+      .catch((err) => {
+        showError(err.res.data.message);
       });
   };
 
@@ -177,30 +171,16 @@ const Profile = () => {
         />
       </div>
       <div className="mb-20">
-        {/* <TextField
-          id="Dob"
-          label="Dob"
-          classes={{ root: classes.customLabel }}
-          type="dob"
-          name={"dob"}
-          value={dob}
-          onChange={(e) => setDob(e.target.value)}
-          variant="outlined"
-          fullWidth
-          required
-          error={error.dob}
-        /> */}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DesktopDatePicker
             label="Date"
-            inputFormat="MM/DD/YYYY"
+            inputFormat="mm/dd/yyyy"
             value={dob}
             onChange={(date) => setDob(date)}
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
       </div>
-
       <div className="mb-20">
         <TextField
           id="Phone"
@@ -208,6 +188,7 @@ const Profile = () => {
           classes={{ root: classes.customLabel }}
           type="number"
           name={"phone"}
+          inputProps={{ maxLength: 10 }}
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           variant="outlined"
@@ -216,32 +197,35 @@ const Profile = () => {
           error={error.phone}
         />
       </div>
-
       <div
+        className="mb-20"
+        style={{
+          margin: "0.6rem",
+          width: "50%",
+        }}
+      >
+        {/* 
         style={{
           marginLeft: "49rem",
           width: "50%",
           marginBottom: "37rem",
           borderRadius: "40%",
         }}
-        className="flex items-center justify-center absolute bottom-0 -mb-44"
-      >
+        //className="flex items-center justify-center absolute bottom-0 -mb-44"
+      // > */}
         <Avatar
-          className={clsx(classes.avatar, "avatar w-72 h-72 p-8 box-content")}
+          className={clsx(classes.avatar, "avatar w-80 h-80  box-content")}
           alt="user photo"
           src={fileshow ? fileshow : user.data.photoURL}
-          // src={
-          //   user.data.photoURL && user.data.photoURL !== ""
-          //     ? user.data.photoURL
-          //     : "assets/images/avatars/profile.jpg"
-          // }
         />
         <div>
-          <Link onClick={handleUploadBtnClick}>Change Profile Photo</Link>
+          <Link onClick={handleUploadBtnClick} style={{ marginLeft: "24px" }}>
+            Edit
+          </Link>
 
           <input
             type="file"
-            id="file_input_file"
+            id="file"
             ref={textInput}
             accept="image/png, 
                image/jpeg"

@@ -252,12 +252,11 @@ const UserList = () => {
         showError(error.response?.data?.message);
       });
   };
-  const deleteSurvey = () => {
+  const deleteSurvey = (id) => {
     setIsLoading(true);
 
     axios
-      // .post(`/users/delete`, { id: id })
-      .post(`/users/delete`)
+      .post(`/users/delete`, { id: id })
       .then((response) => {
         showSuccess(response.data.message);
         setIsLoading(false);

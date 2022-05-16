@@ -14,18 +14,23 @@ const CreateProjectAdmin = {
       },
     },
   },
-  auth: authRoles.admin,
+
+  //auth: [...authRoles.user, ...authRoles.admin],
+  // auth: authRoles.admin,
   routes: [
     {
+      auth: [...authRoles.admin],
       path: "/admin/project/create",
       component: lazy(() => import("./CreateProjectAdmin")),
     },
     {
+      auth: [...authRoles.admin],
       path: "/admin/project/update/:id",
       component: lazy(() => import("./CreateProjectAdmin")),
     },
 
     {
+      auth: [...authRoles.user, ...authRoles.admin],
       path: "/admin/project/list",
       component: lazy(() => import("./ProjectList")),
     },

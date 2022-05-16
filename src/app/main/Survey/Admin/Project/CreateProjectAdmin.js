@@ -432,10 +432,6 @@ const CreateProject = (props) => {
             }}
           >
             <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
-            {/* 
-            {JSON.stringify(userIds)}
-
-            {JSON.stringify(userNames)} */}
 
             <Select
               labelId="demo-multiple-chip-label"
@@ -486,7 +482,9 @@ const CreateProject = (props) => {
             />
 
             <div>
-              <Link onClick={handleUploadBtnClick}>Upload image</Link>
+              <Link to="/" onClick={handleUploadBtnClick}>
+                Upload image
+              </Link>
 
               <input
                 type="file"

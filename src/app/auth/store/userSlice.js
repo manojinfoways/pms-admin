@@ -90,7 +90,7 @@ export const setUserData = (user) => async (dispatch, getState) => {
     };
   } else {
     history.location.state = {
-      redirectUrl: `/admin/users/list`, // for example 'apps/academy'
+      redirectUrl: `/admin/project/list`, // for example 'apps/academy'
     };
   }
   // history.location.state = {
@@ -103,6 +103,11 @@ export const setUserData = (user) => async (dispatch, getState) => {
   dispatch(setDefaultSettings(user.data.settings));
 
   dispatch(setUser(user));
+};
+
+export const setUserImage = (user) => async (dispatch, getState) => {
+  dispatch(setImage(user));
+  // console.log(getState, "0000", user);
 };
 
 export const updateUserSettings = (settings) => async (dispatch, getState) => {
@@ -227,11 +232,15 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => action.payload,
+    setImage: (state, action) => {
+      // console.log("accc", action.payload);
+      state.data.photoURL = action.payload;
+    },
     userLoggedOut: (state, action) => initialState,
   },
   extraReducers: {},
 });
 
-export const { setUser, userLoggedOut } = userSlice.actions;
+export const { setUser, userLoggedOut, setImage } = userSlice.actions;
 
 export default userSlice.reducer;

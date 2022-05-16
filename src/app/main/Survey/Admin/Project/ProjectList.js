@@ -12,21 +12,10 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import { setToolbarHeader } from "app/store/fuse/toolbarHeaderSlice";
 import Grid from "@material-ui/core/Grid";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
 
-// import { makeStyles } from "@material-ui/core/styles";
-
-// const useStyles = makeStyles((theme) => ({
-//   customLabel: {
-//     "& label": {
-//       fontSize: "12px",
-//     },
-//   },
-// }));
 const ProjectList = () => {
-  // const classes = useStyles();
   const state = useSelector(({ fuse }) => fuse.dialog.state);
+  const role = useSelector(({ auth }) => auth.user.role);
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
@@ -73,67 +62,75 @@ const ProjectList = () => {
     }
   };
   return (
-    <div
+    // <div
+    //   style={{
+    //     padding: "3.2rem",
+    //   }}
+    // >
+    <Grid
+      container
+      spacing={2}
       style={{
         padding: "3.2rem",
       }}
     >
-      <Grid container spacing={2}>
-        {project.map((data) => (
-          <Grid item xs={12} md={6} lg={4}>
-            <Card
-              sx={{
-                display: "flex",
-                // height: "100%",
-                // marginBottom: "1rem",
-              }}
-            >
-              {data.image ? (
-                <CardMedia
-                  component="img"
-                  sx={{ width: 90, height: 90, objectFit: "cover" }}
-                  image={data.image}
-                  alt="Live from space album contain"
-                />
-              ) : (
-                <CardMedia
-                  component="img"
-                  sx={{ width: 90, height: 90, objectFit: "cover" }}
-                  style={{ padding: "0.9rem" }}
-                  image="https://cdn.searchenginejournal.com/wp-content/uploads/2019/08/c573bf41-6a7c-4927-845c-4ca0260aad6b-760x400.jpeg"
-                  alt="Live from space album cover"
-                />
-              )}
+      {project.map((data) => (
+        <Grid item xs={12} md={6} lg={4}>
+          <Card
+            sx={{
+              display: "flex",
+            }}
+          >
+            {data.image ? (
+              <CardMedia
+                component="img"
+                className="img3"
+                sx={{ width: "100px", height: "100px", objectFit: "cover" }}
+                image={data.image}
+                alt="Live from space album contain"
+              />
+            ) : (
+              <CardMedia
+                component="img"
+                className="img3"
+                sx={{ width: "100px", height: "100px", objectFit: "cover" }}
+                style={{ padding: "0.9rem" }}
+                image="https://cdn.searchenginejournal.com/wp-content/uploads/2019/08/c573bf41-6a7c-4927-845c-4ca0260aad6b-760x400.jpeg"
+                alt="Live from space album cover"
+              />
+            )}
 
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <div
-                  // className="data_name"
-                  style={{
-                    marginTop: "0.4rem",
-                    color: "black",
-                    fontSize: "1.7rem",
-                    marginLeft: "0.6rem",
-                  }}
-                  onClick={() => {
-                    history.push({
-                      pathname: "/admin/project/update/" + data._id,
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <div
+                style={{
+                  marginTop: "0.4rem",
+                  color: "black",
+                  fontSize: "1.7rem",
+                  marginLeft: "0.6rem",
+                }}
+                onClick={() => {
+                  role == "admin"
+                    ? history.push({
+                        pathname: "/admin/project/update/" + data._id,
+                        state: { survey: data },
+                      })
+                    : null;
+                }}
+              >
+                {data.name}
+              </div>
 
-                      state: { survey: data },
-                    });
-                  }}
-                >
-                  {data.name}
-                </div>
-
+              <div
+                style={{
+                  padding: "2px",
+                }}
+              >
                 <span
                   style={{
-                    marginTop: "0.5rem",
-                    display: "flex",
-                    // width: "100%",
-                    // height: "100%",
-                    // flexDirection: "row",
-                    // overflow: "hidden",
+                    marginTop: "1.5rem",
+                    overflowX: "auto",
                   }}
+                  className="user_wrap"
                 >
                   {data.assignUsers.map((datas) => (
                     <Tooltip title={datas.firstname}>
@@ -145,7 +142,7 @@ const ProjectList = () => {
                           cursor: "pointer",
                           color: " black",
                           backgroundColor: "whitesmoke",
-                          marginBottom: "0.5rem",
+                          float: "left",
                         }}
                         alt="user photo"
                         src={datas.url}
@@ -153,12 +150,13 @@ const ProjectList = () => {
                     </Tooltip>
                   ))}
                 </span>
-              </Box>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </div>
+              </div>
+            </Box>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
+    // </div>
   );
 };
 

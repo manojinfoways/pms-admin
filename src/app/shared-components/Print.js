@@ -7,7 +7,8 @@ import "./PrintStyle.css";
 const useStyles = makeStyles({
   headerWrapper: {
     // background: '#f78e57',
-    background: "#50592F",
+    // background: "#50592F",
+    background: "#2775ff",
     alignItems: "center",
     padding: "10px 15px 0",
     minHeight: "50px",
@@ -78,8 +79,8 @@ const Print = forwardRef((props, ref) => {
           <Grid item xs={3} className="p-36">
             <div className={classes.logoWrapper}>
               <img
-                src={`${process.env.REACT_APP_PUBLIC}/assets/images/logos/LOGOV2-bg.png`}
-                alt="PINPOINTGUAM"
+                src={`${process.env.REACT_APP_PUBLIC}/assets/images/logos/homevue.svg`}
+                alt="PMS"
               />
             </div>
           </Grid>

@@ -36,7 +36,7 @@
   line-height: 1.334;
   height: 10px;
 }
-.data_name1 {
+.data_name {
   font-size: 1.7rem;
   font-family: Poppins, Roboto, "Helvetica", Arial, sans-serif;
   font-weight: 300;
@@ -75,4 +75,19 @@
   text-align: justify;
   -moz-text-align-last: justify;
   text-align-last: justify;
+}
+.img3 {
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: rgba(44, 41, 35, 0.103);
+  float: left;
+  /* width: 72px;
+  height: 66px; */
+  display: block;
+  /* margin-right: 2%; */
+}
+.user_wrap {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

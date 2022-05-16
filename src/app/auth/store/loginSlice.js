@@ -7,7 +7,7 @@ import { setUserData } from "./userSlice";
 export const submitLogin =
   ({ email, password }) =>
   async (dispatch) => {
-    console.log("HHHH");
+    // console.log("HHHH");
     return jwtService
       .signInWithEmailAndPassword(email, password)
       .then((user) => {

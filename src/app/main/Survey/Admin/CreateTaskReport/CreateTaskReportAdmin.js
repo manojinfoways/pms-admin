@@ -18,7 +18,6 @@ import moment from "moment";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { TextareaAutosize } from "@mui/material";
 
 const SubmitButton = styled(Button)({
   width: "100%",
@@ -55,25 +54,25 @@ const CreateTaskReportAdmin = (props) => {
   const [description, setDescription] = useState("");
   const [minutes, setMinutes] = useState("");
   const [hours, setHours] = useState("");
-  const [minutess, setMinutess] = useState("");
-  const [date, setDate] = useState(moment().format("DD/MM/yyyy"));
+  //const [date, setDate] = useState(moment().format("DD/MM/yyyy"));
+  const [date, setDate] = useState(moment());
   const [createdat, setCreatedat] = useState(moment());
   const [updatedat, setUpdatedat] = useState(moment());
   const [project, setProject] = useState([]);
 
-  useEffect(() => {
-    getProject();
-  }, []);
   const classes = useStyles(props);
   const dispatch = useDispatch();
 
   const handleChange = (event) => {
+    // setIsLoading(true);
     setProject_id(event.target.value);
   };
-
+  useEffect(() => {
+    getProject();
+  }, []);
   useEffect(() => {
     if (props.match.params.id) {
-      dispatch(setToolbarHeader("Update Intake"));
+      dispatch(setToolbarHeader("Update Task Report"));
     } else {
       dispatch(setToolbarHeader("Add Task Report"));
     }
@@ -81,20 +80,19 @@ const CreateTaskReportAdmin = (props) => {
       let stateData = props.location.state.survey;
       setProject_id(stateData.project_id);
       setTitle(stateData.title);
-      // setStatus(stateData.status);
       setDescription(stateData.description);
       let hr = Math.floor(stateData.minutes / 60);
       setHours(hr);
       let mn = stateData.minutes - hr * 60;
       setMinutes(mn);
-      setDate(moment(stateData.date).format("DD/MM/YYYY"));
+      setDate(stateData.date);
+      //    setDate(moment(stateData.date).format("DD/MM/yyyy"));
       setCreatedat(stateData.createdat);
       setUpdatedat(stateData.updatedat);
-      // setRole(stateData.role);
       setId(stateData._id);
     } else {
       if (props.match.params.id) {
-        history.push("/admin/users/list");
+        history.push("/admin/taskreport/list");
       }
     }
   }, []);
@@ -120,30 +118,21 @@ const CreateTaskReportAdmin = (props) => {
     setHours("");
     setProject_id("");
     setTitle("");
-    Dsetdescription("");
+    setdescription("");
     setMinutes("");
     setDate("");
     setCreatedat("");
     setupdatedat("");
-    // setStatus("");
-    // setRole("");
   };
 
   const formSubmit = () => {
     if (isFormValid()) {
       setIsLoading(true);
       if (id) {
+        // console.log("update");
+
         axios
           .put(`/taskreport/edit`, {
-            // project_id: project_id,
-            // userId: id,
-            // title: title,
-            // description: description,
-            // minutes: minutes,
-            // date: date,
-            // createdat: createdat,
-            // updatedat: updatedat,
-
             taskreportId: id,
             title: title,
             description: description,
@@ -153,35 +142,32 @@ const CreateTaskReportAdmin = (props) => {
             updatedat: updatedat,
           })
           .then((response) => {
-            showSuccess(response.data.message);
+            showSuccess("Taskreport updated successfully");
             formClear();
             setIsLoading(false);
             history.push("/admin/taskreport/list");
           })
           .catch((error) => {
             setIsLoading(false);
-            showError(error?.response?.data?.message);
+            showError("TaskReport error");
           });
       } else {
+        // console.log("create");
         axios
-          .post(
-            `/taskreport/add`,
-            //    headers: {
-            // Authorization: user.token,
-            //  },
-            {
-              project_id: project_id,
-              title: title,
-              description: description,
-              minutes: minutes + hours * 60,
-              date: moment(date, "DD/MM/YYYY").format("YYYY-MM-DD"),
-              createdat: createdat,
-              updatedat: updatedat,
-              // status: status,
-            }
-          )
+          .post(`/taskreport/add`, {
+            project_id: project_id,
+            title: title,
+            description: description,
+            minutes: minutes + hours * 60,
+            //   date: moment(date, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            date: date,
+            createdat: createdat,
+            updatedat: updatedat,
+            // status: status,
+          })
           .then((response) => {
             showSuccess(response.data.message);
+            console.log("123 response", response);
             formClear();
             setIsLoading(false);
             history.push("/admin/taskreport/create");
@@ -198,13 +184,22 @@ const CreateTaskReportAdmin = (props) => {
   const isFormValid = () => {
     setError({});
     let isValid = true;
-    let errors = {};
-
+    if (project_id) setError((prev) => ({ ...prev, project_id: false }));
+    else {
+      setError((prev) => ({
+        ...prev,
+        project_id: true,
+        errors: "Only project_id",
+        project_id_message: "Enter project_id please",
+      }));
+      isValid = false;
+    }
     if (title) setError((prev) => ({ ...prev, title: false }));
     else {
       setError((prev) => ({
         ...prev,
         title: true,
+        errors: "Only title",
         title_message: "Enter title please",
       }));
       isValid = false;
@@ -227,15 +222,21 @@ const CreateTaskReportAdmin = (props) => {
       }));
       isValid = false;
     }
+    if (hours) setError((prev) => ({ ...prev, hours: false }));
+    else {
+      setError((prev) => ({
+        ...prev,
+        hours: true,
+        hours_message: "Enter hours please",
+      }));
 
+      isValid = false;
+    }
     if (minutes) setError((prev) => ({ ...prev, minutes: false }));
     else {
       setError((prev) => ({
         ...prev,
         minutes: true,
-        errors: "Only number",
-        //errors: "*Please enter your mobile no.",
-
         minutes_message: "Enter minutes please",
       }));
 
@@ -245,7 +246,7 @@ const CreateTaskReportAdmin = (props) => {
     if (!isValid) {
       showError("Please check survey form validation");
     }
-    console.log(name, "error==>", error);
+    console.log("error==>", error);
     return isValid;
   };
 
@@ -267,172 +268,159 @@ const CreateTaskReportAdmin = (props) => {
   };
 
   return (
-    <Box style={{ padding: "20px" }}>
-      <Grid
-        container
-        rowSpacing={2}
-        className="m-20"
-        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-      >
-        {id ? null : (
+    <div>
+      <Box style={{ padding: "20px" }}>
+        <Grid
+          container
+          rowSpacing={2}
+          className="m-20"
+          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        >
+          {id ? null : (
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Project_id
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={project_id}
+                  label="project_id"
+                  error={error.project_id}
+                  onChange={handleChange}
+                >
+                  {project.map((data) => (
+                    <MenuItem value={data._id}>{data.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+
           <Grid item xs={6}>
+            <TextField
+              id="title"
+              label="Title"
+              classes={{ root: classes.customLabel }}
+              type="text"
+              name="title"
+              error={error.title}
+              required
+              inputProps={{ maxLength: 50 }}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              variant="outlined"
+              fullWidth
+              placeholder="title..."
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              style={{
+                width: "100%",
+              }}
+              id="description"
+              label="Description"
+              classes={{ root: classes.customLabel }}
+              multiline={true}
+              name="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={4}
+              variant="outlined"
+              error={error.description}
+              placeholder="description..."
+            />
+          </Grid>
+
+          <Grid item lg={3}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Project_id</InputLabel>
+              <InputLabel id="demo-simple-select-label">Hours</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={project_id}
-                label="project_id"
-                error={error.project_id}
-                onChange={handleChange}
+                value={hours}
+                id="hours"
+                label="hours"
+                error={error.hours}
+                onChange={(e) => setHours(e.target.value)}
               >
-                {project.map((data) => (
-                  <MenuItem value={data._id}>{data.name}</MenuItem>
-                  //<MenuItem value={project_id}>{project_id}</MenuItem>
-                ))}
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={6}>6</MenuItem>
+                <MenuItem value={7}>7</MenuItem>
+                <MenuItem value={8}>8</MenuItem>
+                <MenuItem value={9}>9</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
               </Select>
             </FormControl>
           </Grid>
-        )}
+          {/* {minutes} */}
+          <Grid item lg={3}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Minutes</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={minutes}
+                id="minutes"
+                label="minutes"
+                error={error.minutes}
+                onChange={(e) => setMinutes(e.target.value)}
+              >
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={15}>15</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={25}>25</MenuItem>
+                <MenuItem value={30}>30</MenuItem>
+                <MenuItem value={35}>35</MenuItem>
+                <MenuItem value={40}>40</MenuItem>
+                <MenuItem value={45}>45</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+                <MenuItem value={55}>55</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
 
-        <Grid item xs={6}>
-          <TextField
-            id="title"
-            label="title"
-            classes={{ root: classes.customLabel }}
-            type="text"
-            name="title"
-            error={error.title}
-            required
-            inputProps={{ maxLength: 50 }}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            variant="outlined"
-            fullWidth
-            placeholder={error.title}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextareaAutosize
-            style={{
-              width: " 90rem",
-              height: "11rem",
-              backgroundColor: "#f6f7f9",
-              borderRadius: "1px solid black",
-            }}
-            id="description"
-            label="Description"
-            classes={{ root: classes.customLabel }}
-            type="textarea"
-            multiline={true}
-            name="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={5}
-            variant="outlined"
-            error={error.description}
-            placeholder="Description..."
-          />
-        </Grid>
-
-        <Grid item lg={3}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Hours</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={hours}
-              id="hours"
-              label="hours"
-              error={error.hours}
-              onChange={(e) => setHours(e.target.value)}
-            >
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={4}>4</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={6}>6</MenuItem>
-              <MenuItem value={7}>7</MenuItem>
-              <MenuItem value={8}>8</MenuItem>
-              <MenuItem value={9}>9</MenuItem>
-              <MenuItem value={10}>10</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item lg={3}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Minutes</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={minutes}
-              id="minutes"
-              label="minutes"
-              error={error.minutes}
-              onChange={(e) => setMinutes(e.target.value)}
-            >
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={15}>15</MenuItem>
-              <MenuItem value={20}>20</MenuItem>
-              <MenuItem value={25}>25</MenuItem>
-              <MenuItem value={30}>30</MenuItem>
-              <MenuItem value={35}>35</MenuItem>
-              <MenuItem value={40}>40</MenuItem>
-              <MenuItem value={45}>45</MenuItem>
-              <MenuItem value={50}>50</MenuItem>
-              <MenuItem value={55}>55</MenuItem>
-              <MenuItem value={60}>60</MenuItem>
-            </Select>
-          </FormControl>
+          <Grid item lg={3}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDatePicker
+                label="Date"
+                inputFormat="MM/dd/yyyy"
+                value={date}
+                onChange={(date) => setDate(date)}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </Grid>
         </Grid>
 
-        <Grid item lg={3}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DesktopDatePicker
-              label="date"
-              inputFormat="dd/MM/yyyy"
-              value={date}
-              onChange={(dob) => {
-                setDate(dob);
-                console.log("dob", dob);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  value={date}
-                  {...params}
-                  inputProps={{
-                    ...params.inputsProps,
-                    placeholder: "dd/mm/aaaa",
-                  }}
-                />
-              )}
-            />
-          </LocalizationProvider>
+        <Grid>
+          <Grid item xs={6}></Grid>
+          {/* {id} */}
+          <Grid item xs={6}>
+            {isLoading ? (
+              <div className="flex justify-center mt-20">
+                <CircularProgress size={30} />
+              </div>
+            ) : id ? (
+              <SubmitButton variant="contained" onClick={formSubmit}>
+                Update
+              </SubmitButton>
+            ) : (
+              <SubmitButton variant="contained" onClick={formSubmit}>
+                Submit
+              </SubmitButton>
+            )}
+          </Grid>
         </Grid>
-      </Grid>
-
-      <Grid>
-        <Grid item xs={6}></Grid>
-        {/* {id} */}
-        <Grid item xs={6}>
-          {isLoading ? (
-            <div className="flex justify-center mt-20">
-              <CircularProgress size={30} />
-            </div>
-          ) : id ? (
-            <SubmitButton variant="contained" onClick={formSubmit}>
-              Update
-            </SubmitButton>
-          ) : (
-            <SubmitButton variant="contained" onClick={formSubmit}>
-              Submit
-            </SubmitButton>
-          )}
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </div>
   );
 };
 

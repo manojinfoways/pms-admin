@@ -14,7 +14,8 @@ const CreateTaskReportAdmin = {
       },
     },
   },
-  auth: authRoles.admin,
+  // auth: authRoles.admin,
+  auth: [...authRoles.user, ...authRoles.admin],
   routes: [
     {
       path: "/admin/taskreport/create",
@@ -27,6 +28,10 @@ const CreateTaskReportAdmin = {
     {
       path: "/admin/taskreport/list",
       component: lazy(() => import("./TaskReportList")),
+    },
+    {
+      path: "/admin/taskreport/analytics",
+      component: lazy(() => import("./TaskAnalytics")),
     },
   ],
 };

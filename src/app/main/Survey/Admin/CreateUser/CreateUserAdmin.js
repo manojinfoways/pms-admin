@@ -57,6 +57,7 @@ const CreateUser = (props) => {
   const [status, setStatus] = useState("");
   const [role, setRole] = useState("");
   const [id, setId] = useState("");
+  const [isError, setIsError] = useState(false);
   const [center, setCenter] = useState({
     lat: parseFloat(`${process.env.REACT_APP_GOOGLE_LAT}`),
     lng: parseFloat(`${process.env.REACT_APP_GOOGLE_LONG}`),
@@ -64,12 +65,11 @@ const CreateUser = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
 
-  const handleUpdatCenter = (center) => {
-    setCenter({ lat: center.lat, lng: center.lng });
-  };
   const handleChange = (event) => {
-    setStatus(event.target.value);
     setRole(event.target.value);
+  };
+  const handleChange1 = (event) => {
+    setStatus(event.target.value);
   };
   useEffect(() => {
     if (props.match.params.id) {
@@ -178,6 +178,7 @@ const CreateUser = (props) => {
           )
           .then((response) => {
             showSuccess(response.data.message);
+
             formClear();
             setIsLoading(false);
             history.push("/admin/users/list");
@@ -241,6 +242,7 @@ const CreateUser = (props) => {
       }));
       isValid = false;
     }
+
     if (status) setError((prev) => ({ ...prev, status: false }));
     else {
       setError((prev) => ({
@@ -250,6 +252,7 @@ const CreateUser = (props) => {
       }));
       isValid = false;
     }
+
     if (dob) setError((prev) => ({ ...prev, dob: false }));
     else {
       setError((prev) => ({
@@ -355,9 +358,15 @@ const CreateUser = (props) => {
             name="phone"
             error={error.phone}
             required
-            inputProps={{ maxLength: 9 }}
+            inputProps={{ maxLength: 10 }}
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            // onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              if (e.target.value.length > 10) {
+                setIsError(true);
+              }
+            }}
             variant="outlined"
             fullWidth
             placeholder={error.phone}
@@ -414,7 +423,7 @@ const CreateUser = (props) => {
               value={status}
               label="Status"
               error={error.status}
-              onChange={handleChange}
+              onChange={handleChange1}
             >
               <MenuItem value={true}>Active</MenuItem>
               <MenuItem value={false}>InActive</MenuItem>
@@ -432,8 +441,10 @@ const CreateUser = (props) => {
               error={error.role}
               onChange={handleChange}
             >
-              <MenuItem value={"developer"}>developer</MenuItem>
-              <MenuItem value={"admin"}>admin</MenuItem>
+              {/* <MenuItem value={developer}>developer</MenuItem>
+              <MenuItem value={admin}>admin</MenuItem> */}
+              <MenuItem value="developer">developer</MenuItem>
+              <MenuItem value="admin">admin</MenuItem>
             </Select>
           </FormControl>
         </Grid>

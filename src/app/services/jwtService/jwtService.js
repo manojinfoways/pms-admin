@@ -75,7 +75,7 @@ class JwtService extends FuseUtils.EventEmitter {
             const nArray = {};
             const resData = response.data;
 
-            let role = "admin";
+            let role = resData.data.role;
             // if (resData.roles.includes("ROLE_ADMIN")) {
             //   role = "admin";
             // } else {
@@ -92,8 +92,8 @@ class JwtService extends FuseUtils.EventEmitter {
             nArray.user.data.displayName = resData.data.firstname;
             nArray.user.data.otherInfo = resData;
 
-            nArray.user.data.photoURL = resData.data.profileImage
-              ? resData.data.profileImage
+            nArray.user.data.photoURL = resData.data.image
+              ? resData.data.image
               : `${process.env.REACT_APP_PUBLIC}/assets/images/avatars/profile.jpg`;
             nArray.user.data.email = resData.data.email;
             nArray.user.data.settings = {};
@@ -182,7 +182,7 @@ class JwtService extends FuseUtils.EventEmitter {
               const nArray = {};
               const resData = response.data.data;
               // console.log("PLZ", resData);
-              let role = "admin";
+              let role = resData.role;
               // if (resData.roles.includes("ROLE_ADMIN")) {
               //   role = "admin";
               // } else {
@@ -198,8 +198,8 @@ class JwtService extends FuseUtils.EventEmitter {
               nArray.user.data.displayName = resData.firstname;
               nArray.user.data.otherInfo = response.data;
 
-              nArray.user.data.photoURL = resData.profileImage
-                ? resData.profileImage
+              nArray.user.data.photoURL = resData.image
+                ? resData.image
                 : `${process.env.REACT_APP_PUBLIC}/assets/images/avatars/profile.jpg`;
               nArray.user.data.email = resData.email;
               nArray.user.data.settings = {};

@@ -16,7 +16,7 @@
           homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
         -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link rel="icon" type="image/ico" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" type="image/ico" href="/assets/images/logos/homevue.svg" />
     <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
 
     <!--        You can choose main icon from variety of the material ui icon fonts-->
@@ -35,6 +35,12 @@
     />
 
     <noscript id="jss-insertion-point"></noscript>
+    <!-- start of high chart code -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <!-- end of high chart code -->
     <!--
           Notice the use of %PUBLIC_URL% in the tags above.
           It will be replaced with the URL of the `public` folder during the build.
@@ -56,7 +62,7 @@
         right: 0;
         bottom: 0;
         /* background-color:#f78e57;  */
-        background-color: #50592f;
+        background-color: #2775ff;
         z-index: 99999;
         pointer-events: none;
       }
