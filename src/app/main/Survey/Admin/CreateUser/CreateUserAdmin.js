@@ -284,7 +284,7 @@ const CreateUser = (props) => {
     }
 
     if (!isValid) {
-      showError("Please check survey form validation");
+      showError("Validation Error");
     }
     console.log(name, "error==>", error);
     return isValid;
@@ -301,7 +301,7 @@ const CreateUser = (props) => {
         <Grid item xs={12} sm={12} md={6} lg={6}>
           <TextField
             id="firstname"
-            label="Firstname"
+            label="First Name"
             classes={{ root: classes.customLabel }}
             type="text"
             name="Name"
@@ -318,7 +318,7 @@ const CreateUser = (props) => {
         <Grid item xs={12} sm={12} md={6} lg={6}>
           <TextField
             id="lastname"
-            label="Lastname"
+            label="Last Name"
             classes={{ root: classes.customLabel }}
             type="text"
             name="lastname"
@@ -392,29 +392,7 @@ const CreateUser = (props) => {
             />
           </Grid>
         ) : null}
-        <Grid item xs={12} sm={12} md={6} lg={6}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DesktopDatePicker
-              label="Date"
-              inputFormat="MM/dd/yyyy"
-              value={dob}
-              onChange={(date) => setDob(date)}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DesktopDatePicker
-              label="Doj"
-              inputFormat="MM/dd/yyyy"
-              value={doj}
-              onChange={(date) => setDoj(date)}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </Grid>{" "}
-        <Grid item xs={12} sm={12} md={6} lg={6}>
+        <Grid item xs={6} sm={6} md={3} lg={3}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Status</InputLabel>
             <Select
@@ -430,7 +408,7 @@ const CreateUser = (props) => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
+        <Grid item xs={6} sm={6} md={3} lg={3}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Role</InputLabel>
             <Select
@@ -448,6 +426,28 @@ const CreateUser = (props) => {
             </Select>
           </FormControl>
         </Grid>
+        <Grid item xs={6} sm={6} md={3} lg={3}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+              label="DOB"
+              inputFormat="dd/MM/yyyy"
+              value={dob}
+              onChange={(date) => setDob(date)}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </Grid>{" "}
+        <Grid item xs={6} sm={6} md={3} lg={3}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+              label="DOJ"
+              inputFormat="dd/MM/yyyy"
+              value={doj}
+              onChange={(date) => setDoj(date)}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </Grid>{" "}
       </Grid>
 
       <Grid>

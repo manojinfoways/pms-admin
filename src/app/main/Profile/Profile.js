@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-
+import Grid from "@mui/material/Grid";
 import { setUserImage } from "../../auth/store/userSlice";
 const SubmitButton = styled(Button)({
   width: "100%",
@@ -125,119 +125,128 @@ const Profile = () => {
         gridColumnGap: "50%",
       }}
     >
-      <div className="mb-20">
-        <TextField
-          id="Email"
-          label="Email"
-          classes={{ root: classes.customLabel }}
-          type="name"
-          name={"email"}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          variant="outlined"
-          fullWidth
-          required
-          error={error.email}
-        />
-      </div>
-      <div className="mb-20">
-        <TextField
-          id="FirstName"
-          label="FirstName"
-          classes={{ root: classes.customLabel }}
-          type="name"
-          name={"firstname"}
-          value={firstname}
-          onChange={(e) => setFirstName(e.target.value)}
-          variant="outlined"
-          fullWidth
-          required
-          error={error.firstname}
-        />
-      </div>
-      <div className="mb-20">
-        <TextField
-          id="LastName"
-          label="LastName"
-          classes={{ root: classes.customLabel }}
-          type="lastname"
-          name={"lastname"}
-          value={lastname}
-          onChange={(e) => setLastName(e.target.value)}
-          variant="outlined"
-          fullWidth
-          required
-          error={error.lastname}
-        />
-      </div>
-      <div className="mb-20">
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DesktopDatePicker
-            label="Date"
-            inputFormat="mm/dd/yyyy"
-            value={dob}
-            onChange={(date) => setDob(date)}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </LocalizationProvider>
-      </div>
-      <div className="mb-20">
-        <TextField
-          id="Phone"
-          label="Phone"
-          classes={{ root: classes.customLabel }}
-          type="number"
-          name={"phone"}
-          inputProps={{ maxLength: 10 }}
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          variant="outlined"
-          fullWidth
-          required
-          error={error.phone}
-        />
-      </div>
-      <div
-        className="mb-20"
-        style={{
-          margin: "0.6rem",
-          width: "50%",
-        }}
+      <Grid
+        container
+        rowSpacing={2}
+        className="m-20"
+        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
       >
-        {/* 
-        style={{
-          marginLeft: "49rem",
-          width: "50%",
-          marginBottom: "37rem",
-          borderRadius: "40%",
-        }}
-        //className="flex items-center justify-center absolute bottom-0 -mb-44"
-      // > */}
-        <Avatar
-          className={clsx(classes.avatar, "avatar w-80 h-80  box-content")}
-          alt="user photo"
-          src={fileshow ? fileshow : user.data.photoURL}
-        />
-        <div>
-          <Link onClick={handleUploadBtnClick} style={{ marginLeft: "24px" }}>
-            Edit
-          </Link>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
+          <div className="mb-20">
+            <TextField
+              id="Email"
+              label="Email"
+              classes={{ root: classes.customLabel }}
+              type="name"
+              name={"email"}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              variant="outlined"
+              fullWidth
+              required
+              error={error.email}
+            />
+          </div>
+          <div className="mb-20">
+            <TextField
+              id="FirstName"
+              label="First Name"
+              classes={{ root: classes.customLabel }}
+              type="name"
+              name={"firstname"}
+              value={firstname}
+              onChange={(e) => setFirstName(e.target.value)}
+              variant="outlined"
+              fullWidth
+              required
+              error={error.firstname}
+            />
+          </div>
+          <div className="mb-20">
+            <TextField
+              id="LastName"
+              label="Last Name"
+              classes={{ root: classes.customLabel }}
+              type="lastname"
+              name={"lastname"}
+              value={lastname}
+              onChange={(e) => setLastName(e.target.value)}
+              variant="outlined"
+              fullWidth
+              required
+              error={error.lastname}
+            />
+          </div>
+          <div className="mb-20">
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDatePicker
+                label="Date"
+                inputFormat="mm/dd/yyyy"
+                value={dob}
+                onChange={(date) => setDob(date)}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </div>
+          <div className="mb-20">
+            <TextField
+              id="Phone"
+              label="Phone"
+              classes={{ root: classes.customLabel }}
+              type="number"
+              name={"phone"}
+              inputProps={{ maxLength: 10 }}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              variant="outlined"
+              fullWidth
+              required
+              error={error.phone}
+            />
+          </div>
+        </Grid>
+        {/* <Grid item xs={1}></Grid>
+        <Grid item xs={1}></Grid> */}
+        <Grid item xs={12} sm={12} md={6} lg={6}>
+          <div
+            // className="mb-20"
+            style={{
+              marginLeft: "30rem",
+              width: "50%",
+              marginBottom: "7rem",
+              borderRadius: "40%",
+            }}
+            //className="flex items-center justify-center absolute bottom-0 -mb-44"
+          >
+            <Avatar
+              className={clsx(classes.avatar, "avatar w-80 h-80  box-content")}
+              alt="user photo"
+              src={fileshow ? fileshow : user.data.photoURL}
+            />
+            <div>
+              <Link
+                onClick={handleUploadBtnClick}
+                style={{ marginLeft: "25%", textAlign: "center" }}
+              >
+                Edit
+              </Link>
 
-          <input
-            type="file"
-            id="file"
-            ref={textInput}
-            accept="image/png, 
+              <input
+                type="file"
+                id="file"
+                ref={textInput}
+                accept="image/png, 
                image/jpeg"
-            onChange={handleImageChange}
-            style={{ display: "none" }}
-          />
-        </div>
-      </div>
-
-      <SubmitButton type="button" variant="contained" onClick={formSubmit}>
-        Update Profile
-      </SubmitButton>
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
+            </div>
+          </div>
+        </Grid>
+        <SubmitButton type="button" variant="contained" onClick={formSubmit}>
+          Update Profile
+        </SubmitButton>
+      </Grid>
     </Box>
   );
 };

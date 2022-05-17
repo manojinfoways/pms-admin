@@ -38,7 +38,7 @@ const columns = [
   },
   {
     name: "firstname",
-    label: "Firstname",
+    label: "First Name",
     options: {
       filter: true,
       sort: true,
@@ -46,7 +46,7 @@ const columns = [
   },
   {
     name: "lastname",
-    label: "Lastname",
+    label: "Last Name",
     options: {
       filter: true,
       sort: true,
