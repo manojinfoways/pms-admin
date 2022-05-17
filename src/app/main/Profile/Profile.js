@@ -150,7 +150,7 @@ const Profile = () => {
           <div className="mb-20">
             <TextField
               id="FirstName"
-              label="FirstName"
+              label="First Name"
               classes={{ root: classes.customLabel }}
               type="name"
               name={"firstname"}
@@ -165,7 +165,7 @@ const Profile = () => {
           <div className="mb-20">
             <TextField
               id="LastName"
-              label="LastName"
+              label="Last Name"
               classes={{ root: classes.customLabel }}
               type="lastname"
               name={"lastname"}
