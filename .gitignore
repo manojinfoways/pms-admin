@@ -5,6 +5,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+package-lock.json
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -38,8 +39,11 @@ bower_components
 build/Release
 
 # Dependency directories
+build/
 node_modules/
 jspm_packages/
+
+
 
 # TypeScript v1 declaration files
 typings/
@@ -64,6 +68,7 @@ typings/
 
 # Output of 'npm pack'
 *.tgz
+*.zip
 
 # Yarn Integrity file
 .yarn-integrity

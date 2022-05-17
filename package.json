@@ -1,5 +1,6 @@
 {
   "name": "pms-reactapp",
+  "homepage": "https://pms.techein.com",
   "version": "6.2.0",
   "private": true,
   "dependencies": {
@@ -165,6 +166,5 @@
       "last 1 firefox version",
       "last 3 safari version"
     ]
-  },
-  "homepage": "/"
+  }
 }

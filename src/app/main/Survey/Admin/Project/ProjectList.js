@@ -74,6 +74,9 @@ const ProjectList = () => {
         padding: "3.2rem",
       }}
     >
+      {!project.length?<h1 style={{textAlign:"center",width:"100%"}}>
+        Sorry, no records found
+      </h1>:null}
       {project.map((data) => (
         <Grid item xs={12} md={6} lg={4}>
           <Card

@@ -33,6 +33,11 @@ const LoginConfig = {
 			path: `/admin`,
 			component: Login
 		} 
+		,
+		{
+			path: `/`,
+			component: Login
+		} 
 	] 
 };
 

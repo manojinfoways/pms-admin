@@ -473,12 +473,12 @@ const TaskReportList = () => {
         title={
           <Typography variant="h6">
             Task Report Listing
-            {isLoading && (
-              <CircularProgress
-                size={24}
-                style={{ marginLeft: 15, position: "relative", top: 4 }}
-              />
-            )}
+              {isLoading && (
+                <CircularProgress
+                  size={24}
+                  style={{ marginLeft: 15, position: "relative", top: 4 }}
+                />
+              )}
           </Typography>
         }
         data={adminPtrListing}
